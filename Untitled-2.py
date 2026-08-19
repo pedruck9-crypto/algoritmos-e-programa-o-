@@ -1,0 +1,12 @@
+1*2=2/2=1(IMPAR)
+3+3=6/2=3(IMPAR)
+4+4=8/2=4(PAR)
+10-7=3/2=1(IMPAR)
+20/2=10/2=5(IMPAR)
+100/15=6.666666666666667(PAR)
+200-25=175/2=87.5(PAR)
+PRINT("O resultado da operação é: ", 1*2=2/2=1(IMPAR), 3+3=6/2=3(IMPAR), 4+4=8/2=4(PAR), 10-7=3/2=1(IMPAR), 20/2=10/2=5(IMPAR), 100/15=6.666666666666667(PAR), 200-25=175/2=87.5(PAR)) IF 2,4,6 AND 8 THEN PRINT("O resultado da operação é PAR") ELSE PRINT("O resultado da operação é IMPAR")
+11*2=22/2=11(IMPAR)
+Warning 0.123...
+12/7=1.7142857142857142(IMPAR)
+WHILE 1=1 DO PRINT("O resultado da operação é: ", 11*2=22/2=11(IMPAR), 12/7=1.7142857142857142(IMPAR)) IF 2,4,6 AND 8 THEN PRINT("O resultado da operação é PAR") ELSE PRINT("O resultado da operação é IMPAR")
