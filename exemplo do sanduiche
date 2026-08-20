@@ -1,0 +1,59 @@
+# ==========================
+# DADOS DO SANDUÍCHE
+# ==========================
+
+tipo_sanduiche = "Misto Quente"   # str
+quantidade_paes = 2              # int
+temperatura = 180.5              # float
+maquina_ligada = True            # bool
+tempo_na_maquina = 5             # int
+
+
+# ==========================
+# FUNÇÕES
+# ==========================
+
+def montar_sanduiche():
+    print("=== MONTAGEM ===")
+    print(f"Tipo: {tipo_sanduiche}")
+    print(f"Quantidade de pães: {quantidade_paes}")
+    print("Queijo adicionado")
+    print("Presunto adicionado")
+
+
+def aquecer_sanduiche():
+    print("\n=== AQUECIMENTO ===")
+
+    if not maquina_ligada:
+        print("A máquina está desligada.")
+        return
+
+    print(f"Temperatura: {temperatura}°C")
+
+    if tempo_na_maquina < 5:
+        print("O sanduíche ainda não está pronto.")
+
+    elif tempo_na_maquina == 5:
+        print("O sanduíche está pronto!")
+
+    else:
+        print("O sanduíche passou do ponto.")
+
+
+def servir_sanduiche():
+    print("\n=== SERVIÇO ===")
+    print("Servindo o misto quente.")
+
+
+# ==========================
+# FUNÇÃO PRINCIPAL
+# ==========================
+
+def main():
+    montar_sanduiche()
+    aquecer_sanduiche()
+    servir_sanduiche()
+
+
+if __name__ == "__main__":
+    main()
