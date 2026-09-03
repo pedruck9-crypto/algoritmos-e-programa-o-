@@ -28,6 +28,25 @@ O projeto foi desenvolvido com uma abordagem **ágil, incremental e iterativa**.
 
 Essa abordagem permitiu testar cada funcionalidade, identificar problemas e fazer ajustes durante o desenvolvimento. Não foi utilizado formalmente um framework de gestão como Scrum ou Kanban; por isso, a descrição mais adequada é abordagem ágil e incremental.
 
+### Possível uso de Scrum ou Kanban
+
+Embora Scrum e Kanban sejam métodos bastante utilizados em projetos de software, não houve necessidade de aplicá-los formalmente neste projeto. Por ser uma atividade individual, acadêmica e de escopo limitado, foi utilizada uma abordagem ágil, incremental e iterativa, com organização das funcionalidades por etapas.
+
+O Scrum poderia ser utilizado caso o projeto tivesse uma equipe, reuniões de planejamento, divisão de responsabilidades e entregas organizadas em ciclos chamados sprints. Um exemplo de divisão seria:
+
+1. Sprint 1: CRUD básica.
+2. Sprint 2: interface web.
+3. Sprint 3: credenciais e regras de negócio.
+4. Sprint 4: testes, ORM e Docker.
+
+O Kanban seria uma alternativa mais simples para controlar as tarefas individualmente, organizando-as em colunas como:
+
+```text
+A fazer → Em andamento → Em teste → Concluído
+```
+
+Portanto, Scrum ou Kanban poderiam ter sido utilizados, mas não eram necessários para atingir os objetivos da disciplina. Nesse contexto, uma lista organizada de tarefas e a implementação por etapas foram suficientes para acompanhar o desenvolvimento.
+
 ## Escopo do projeto
 
 ### Funcionalidades incluídas
