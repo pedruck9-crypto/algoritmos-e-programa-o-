@@ -125,7 +125,8 @@ Portanto, Scrum ou Kanban poderiam ter sido utilizados, mas não eram necessári
 
 ## Instalação local
 
-No terminal, entre no diretório do projeto (`C:\Users\DELL\Documents`) e crie um ambiente virtual:
+No terminal, entre no diretório do projeto (`CD "caminho/para/o/diretorio/do/projeto"
+`) e crie um ambiente virtual:
 
 ```powershell
 python -m venv .venv
@@ -175,6 +176,8 @@ docker compose down
 ## Endpoints principais
 
 - `GET /midias` — lista mídias. Aceita `limit`, `offset`, `titulo`, `genero` e `tipo`.
+   O campo tipo aceita somente filme ou série.
+   O campo genero   aceita apenas os valores predefinidos no sistema (ex: ação, comédia, drama, ficção científica).
 - `GET /midias/{midia_id}` — busca uma mídia específica.
 - `POST /midias` — cadastra uma nova mídia.
 - `PUT /midias/{midia_id}` — atualiza os campos enviados.
