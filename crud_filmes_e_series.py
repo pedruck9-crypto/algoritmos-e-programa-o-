@@ -1,123 +1,113 @@
-from typing import Optional
-from enum import Enum
-from fastapi import FastAPI, HTTPException, Query, Path
-from fastapi.responses import HTMLResponse
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
-
-from db import init_db, list_midias, get_midia, create_midia as db_create_midia, update_midia as db_update_midia, delete_midia as db_delete_midia
+midias = []
+proximo_id = 1
 
 
-app = FastAPI(
-    title="CRUD de Filmes e Séries",
-    description="API para gerenciar um catálogo de filmes e séries",
-    version="1.0.0"
-)
-
-# Configurar CORS para permitir requisições do frontend HTML
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
-@app.get("/", response_class=HTMLResponse, tags=["Home"])
-def read_root():
-    """Retorna a página inicial com interface de usuário."""
-    with open("index.html", "r", encoding="utf-8") as f:
-        return f.read()
+def cadastrar_midia():
+    global proximo_id
+    titulo = input("Título: ").strip()
+    if titulo == "":
+        print("O título não pode ficar vazio.")
+        return
+    midia = {
+        "id": proximo_id,
+        "titulo": titulo,
+        "tipo": input("Tipo (filme/série): ").strip(),
+        "genero": input("Gênero: ").strip(),
+        "ano": input("Ano: ").strip(),
+        "sinopse": input("Sinopse: ").strip(),
+    }
+    midias.append(midia)
+    print("Mídia cadastrada com identificador", proximo_id)
+    proximo_id += 1
 
 
-init_db()
+def listar_midias():
+    if not midias:
+        print("Nenhuma mídia cadastrada.")
+        return
+    for midia in midias:
+        print("\nID: {}".format(midia["id"]))
+        print("Título: {}".format(midia["titulo"]))
+        print("Tipo: {}".format(midia["tipo"]))
+        print("Gênero: {}".format(midia["genero"]))
+        print("Ano: {}".format(midia["ano"]))
+        print("Sinopse: {}".format(midia["sinopse"]))
 
 
-class MidiaCreate(BaseModel):
-    titulo: str = Field(..., min_length=1, description="Título do filme ou série")
-    
-    class Tipo(str, Enum):
-        filme = "filme"
-        serie = "série"
-
-    tipo: Tipo = Field(..., description="Tipo de mídia: filme ou série")
-    genero: Optional[str] = Field(None, description="Gênero (ex: ficção, drama, ação)")
-    ano: Optional[int] = Field(None, ge=1900, le=2100, description="Ano de lançamento")
-    sinopse: Optional[str] = Field(None, description="Descrição breve do conteúdo")
-
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "titulo": "Duna",
-                "tipo": "filme",
-                "genero": "ficção científica",
-                "ano": 2021,
-                "sinopse": "Um jovem herdeiro luta pelo controle do planeta Arrakis."
-            }
-        }
+def buscar_midia(identificador):
+    for midia in midias:
+        if midia["id"] == identificador:
+            return midia
+    return None
 
 
-class MidiaUpdate(BaseModel):
-    titulo: Optional[str] = Field(None, min_length=1, description="Título do filme ou série")
-    tipo: Optional[MidiaCreate.Tipo] = Field(None, description="Tipo de mídia: filme ou série")
-    genero: Optional[str] = Field(None, description="Gênero (ex: ficção, drama, ação)")
-    ano: Optional[int] = Field(None, ge=1900, le=2100, description="Ano de lançamento")
-    sinopse: Optional[str] = Field(None, description="Descrição breve do conteúdo")
+def atualizar_midia():
+    identificador = input("Identificador da mídia: ").strip()
+    if not identificador.isdigit():
+        print("Informe um identificador numérico.")
+        return
+    midia = buscar_midia(int(identificador))
+    if midia is None:
+        print("Mídia não encontrada.")
+        return
+    campos = ["titulo", "tipo", "genero", "ano", "sinopse"]
+    rotulos = ["Novo título", "Novo tipo", "Novo gênero", "Novo ano", "Nova sinopse"]
+    indice = 0
+    while indice < len(campos):
+        novo_valor = input(rotulos[indice] + " (Enter mantém o atual): ").strip()
+        if novo_valor != "":
+            midia[campos[indice]] = novo_valor
+        indice += 1
+    print("Mídia atualizada.")
 
-@app.get("/midias", tags=["Mídias"])
-def listar_midias(
-    limit: int = Query(100, ge=1, le=1000, description="Máximo de itens a retornar"),
-    offset: int = Query(0, ge=0, description="Deslocamento para paginação"),
-    titulo: Optional[str] = Query(None, description="Busca parcial no título"),
-    genero: Optional[str] = Query(None, description="Busca parcial no gênero"),
-    tipo: Optional[str] = Query(None, description="Filtro por tipo (filme/série)")
-):
-    """Listar todas as mídias com suporte a paginação e filtros.
-    
-    Retorna uma lista de mídias ordenadas por ID.
-    Use `limit` e `offset` para paginação.
-    Use `titulo`, `genero` ou `tipo` para filtrar resultados.
-    """
-    return list_midias(limit=limit, offset=offset, titulo=titulo, genero=genero, tipo=tipo)
 
-@app.get("/midias/{midia_id}", tags=["Mídias"])
-def buscar_midia(midia_id: int = Path(..., ge=1, description="ID da mídia")):
-    """Buscar uma mídia específica pelo ID."""
-    row = get_midia(midia_id)
-    if not row:
-        raise HTTPException(status_code=404, detail=f"Mídia com ID {midia_id} não encontrada")
-    return row
+def excluir_midia():
+    identificador = input("Identificador da mídia: ").strip()
+    if not identificador.isdigit():
+        print("Informe um identificador numérico.")
+        return
+    midia = buscar_midia(int(identificador))
+    if midia is None:
+        print("Mídia não encontrada.")
+        return
+    midias.remove(midia)
+    print("Mídia excluída.")
 
-@app.post("/midias", status_code=201, tags=["Mídias"])
-def criar_midia(midia: MidiaCreate):
-    """Criar uma nova mídia (filme ou série) no banco."""
-    midia_id = db_create_midia(midia.dict())
-    return {"id": midia_id, **midia.dict()}
 
-@app.put("/midias/{midia_id}", tags=["Mídias"])
-def atualizar_midia(midia_id: int = Path(..., ge=1, description="ID da mídia"), dados: MidiaUpdate = None):
-    """Atualizar campos de uma mídia existente.
-    
-    Envie apenas os campos que deseja alterar.
-    """
-    atual = get_midia(midia_id)
-    if not atual:
-        raise HTTPException(status_code=404, detail=f"Mídia com ID {midia_id} não encontrada")
+def executar_menu():
+    while True:
+        print("\n=== CRUD de Filmes e Séries — Ciclo 3 ===")
+        print("1 - Cadastrar mídia")
+        print("2 - Listar mídias")
+        print("3 - Buscar mídia")
+        print("4 - Atualizar mídia")
+        print("5 - Excluir mídia")
+        print("0 - Sair")
+        opcao = input("Escolha uma opção: ").strip()
+        if opcao == "1":
+            cadastrar_midia()
+        elif opcao == "2":
+            listar_midias()
+        elif opcao == "3":
+            identificador = input("Identificador: ").strip()
+            if identificador.isdigit():
+                midia = buscar_midia(int(identificador))
+                if midia is None:
+                    print("Mídia não encontrada.")
+                else:
+                    print(midia)
+            else:
+                print("Informe um identificador numérico.")
+        elif opcao == "4":
+            atualizar_midia()
+        elif opcao == "5":
+            excluir_midia()
+        elif opcao == "0":
+            print("Programa encerrado.")
+            break
+        else:
+            print("Opção inválida. Tente novamente.")
 
-    dados_dict = {k: v for k, v in dados.dict().items() if v is not None}
-    if not dados_dict:
-        raise HTTPException(status_code=400, detail="Nenhum campo para atualizar fornecido")
 
-    db_update_midia(midia_id, dados_dict)
-    return {"mensagem": "Mídia atualizada com sucesso"}
-
-@app.delete("/midias/{midia_id}", tags=["Mídias"])
-def deletar_midia(midia_id: int = Path(..., ge=1, description="ID da mídia")):
-    """Remover uma mídia do banco."""
-    row = get_midia(midia_id)
-    if not row:
-        raise HTTPException(status_code=404, detail=f"Mídia com ID {midia_id} não encontrada")
-
-    db_delete_midia(midia_id)
-    return {"mensagem": f"Mídia com ID {midia_id} removida com sucesso"}
+if __name__ == "__main__":
+    executar_menu()
