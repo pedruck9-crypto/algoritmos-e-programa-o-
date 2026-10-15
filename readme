@@ -79,4 +79,4 @@ Próximos passos sugeridos
 - Migrar para ORM (SQLModel/SQLAlchemy) e configurar migrações (Alembic).
 - Dockerizar a aplicação para deployment consistente.
 
-Se quiser, eu posso gerar `Dockerfile`, testes iniciais com `pytest` ou migrar o projeto para usar `SQLModel`.
+
